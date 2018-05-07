@@ -1,6 +1,7 @@
 """
 You need to change the Add() class below.
 """
+import numpy as np
 
 class Node(object):
     def __init__(self, inbound_nodes=[]):
@@ -79,7 +80,46 @@ class Mul(Node):
         for node in self.inbound_nodes:
             self.value *= node.value        
 
+# LINEAR ----------------------------------------------------------------------
+class Linear(Node):
+    def __init__(self, inputs, weights, bias):
+        Node.__init__(self, [inputs, weights, bias])
 
+        # NOTE: The weights and bias properties here are not
+        # numbers, but rather references to other nodes.
+        # The weight and bias values are stored within the
+        # respective nodes.
+
+    def forward(self):
+        """
+        Set self.value to the value of the linear function output.
+
+        """
+        X = self.inbound_nodes[0].value
+        W = self.inbound_nodes[1].value
+        b = self.inbound_nodes[2].value
+        self.value = np.dot(X, W) + b
+            
+ 
+# SIGMOID ---------------------------------------------------------------------
+class Sigmoid(Node):
+    def __init__(self, node):
+        Node.__init__(self, [node])
+
+    def _sigmoid(self, x):
+        """
+        This method is separate from `forward` because it
+        will be used with `backward` as well.
+
+        `x`: A numpy array-like object.
+        """
+        return 1. / (1. + np.exp(-x)) # the `.` ensures that `1` is a float
+
+    def forward(self):
+        input_value = self.inbound_nodes[0].value
+        self.value = self._sigmoid(input_value)
+
+## Non-class function
 def topological_sort(feed_dict):
     """
     Sort generic nodes in topological order using Kahn's Algorithm.
