@@ -10,6 +10,7 @@ build a network that solves the equation below?
 """
 
 from miniflow import *
+import numpy as np
 
 ## Testing addition
 x, y, z = Input(), Input(), Input()
@@ -49,6 +50,50 @@ output = forward_pass(h, graph)
 
 print(output) # should be 12.7 with this example
 
+
+## Testing addition with multiple inputs/outputs
+X, W, b = Input(), Input(), Input()
+
+f = Linear(X, W, b)
+
+X_ = np.array([[-1., -2.], [-1, -2]])
+W_ = np.array([[2., -3], [2., -3]])
+b_ = np.array([-3., -5])
+
+feed_dict = {X: X_, W: W_, b: b_}
+
+graph = topological_sort(feed_dict)
+output = forward_pass(f, graph)
+
+"""
+Output should be:
+[[-9., 4.],
+[-9., 4.]]
+"""
+print(output)
+
+
+## Test Sigmoid
+X, W, b = Input(), Input(), Input()
+
+f = Linear(X, W, b)
+g = Sigmoid(f)
+
+X_ = np.array([[-1., -2.], [-1, -2]])
+W_ = np.array([[2., -3], [2., -3]])
+b_ = np.array([-3., -5])
+
+feed_dict = {X: X_, W: W_, b: b_}
+
+graph = topological_sort(feed_dict)
+output = forward_pass(g, graph)
+
+"""
+Output should be:
+[[  1.23394576e-04   9.82013790e-01]
+ [  1.23394576e-04   9.82013790e-01]]
+"""
+print(output)
 
 
 
