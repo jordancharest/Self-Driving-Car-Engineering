@@ -23,6 +23,7 @@ graph = topological_sort(feed_dict)
 output = forward_pass(f, graph)
 
 # should output 19
+print("\nAddition:")
 print("{} + {} + {} = {} (according to miniflow)".format(feed_dict[x], feed_dict[y], feed_dict[z], output))
 
 
@@ -31,6 +32,8 @@ g = Mul(x, y, z)
 feed_dict = {x: 4, y: 5, z: 10}
 graph = topological_sort(feed_dict)
 output = forward_pass(g, graph)
+
+print("\nMultiplication:")
 print("{} * {} * {} = {} (according to miniflow)".format(feed_dict[x], feed_dict[y], feed_dict[z], output))
 
 
@@ -48,6 +51,7 @@ feed_dict = {
 graph = topological_sort(feed_dict)
 output = forward_pass(h, graph)
 
+print("\nUnweighted Linear Combination:")
 print(output) # should be 12.7 with this example
 
 
@@ -70,6 +74,7 @@ Output should be:
 [[-9., 4.],
 [-9., 4.]]
 """
+print("\nWeighted Linear Combination:")
 print(output)
 
 
@@ -93,8 +98,27 @@ Output should be:
 [[  1.23394576e-04   9.82013790e-01]
  [  1.23394576e-04   9.82013790e-01]]
 """
+print("\nSigmoid:")
 print(output)
 
 
+## Mean Squared Error
+y, a = Input(), Input()
+cost = MSE(y, a)
 
+y_ = np.array([1, 2, 3])
+a_ = np.array([4.5, 5, 10])
+
+feed_dict = {y: y_, a: a_}
+graph = topological_sort(feed_dict)
+# forward pass
+output = forward_pass(cost, graph)
+
+"""
+Expected output
+
+23.4166666667
+"""
+print("\nMSE:")
+print(output)
 

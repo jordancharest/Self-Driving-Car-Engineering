@@ -4,26 +4,47 @@ You need to change the Add() class below.
 import numpy as np
 
 class Node(object):
-    def __init__(self, inbound_nodes=[]):
-        # Nodes from which this Node receives values
-        self.inbound_nodes = inbound_nodes
-        # Nodes to which this Node passes values
-        self.outbound_nodes = []
-        # A calculated value
-        self.value = None
-        # Add this node as an outbound node on its inputs.
-        for n in self.inbound_nodes:
-            n.outbound_nodes.append(self)
+    """
+    Base class for nodes in the network.
 
-    # These will be implemented in a subclass.
+    Arguments:
+
+        `inbound_nodes`: A list of nodes with edges into this node.
+    """
+    def __init__(self, inbound_nodes=[]):
+        """
+        Node's constructor (runs when the object is instantiated). Sets
+        properties that all nodes need.
+        """
+        # A list of nodes with edges into this node.
+        self.inbound_nodes = inbound_nodes
+        # The eventual value of this node. Set by running
+        # the forward() method.
+        self.value = None
+        # A list of nodes that this node outputs to.
+        self.outbound_nodes = []
+        # New property! Keys are the inputs to this node and
+        # their values are the partials of this node with
+        # respect to that input.
+        self.gradients = {}
+        # Sets this node as an outbound node for all of
+        # this node's inputs.
+        for node in inbound_nodes:
+            node.outbound_nodes.append(self)
+
     def forward(self):
         """
-        Forward propagation.
-
-        Compute the output value based on `inbound_nodes` and
-        store the result in self.value.
+        Every node that uses this class as a base class will
+        need to define its own `forward` method.
         """
-        raise NotImplemented
+        raise NotImplementedError
+
+    def backward(self):
+        """
+        Every node that uses this class as a base class will
+        need to define its own `backward` method.
+        """
+        raise NotImplementedError
 
 
 class Input(Node):
@@ -45,7 +66,7 @@ class Input(Node):
         if value is not None:
             self.value = value
 
-
+# ADD -------------------------------------------------------------------------
 class Add(Node):
     def __init__(self, *args, **kwargs):    # accept any number of inbound nodes
         inbound = []
@@ -118,6 +139,37 @@ class Sigmoid(Node):
     def forward(self):
         input_value = self.inbound_nodes[0].value
         self.value = self._sigmoid(input_value)
+
+# MSE -------------------------------------------------------------------------
+class MSE(Node):
+    def __init__(self, y, a):
+        """
+        The mean squared error cost function.
+        Should be used as the last node for a network.
+        """
+        # Call the base class' constructor.
+        Node.__init__(self, [y, a])
+
+    def forward(self):
+        """
+        Calculates the mean squared error.
+        """
+        # NOTE: We reshape these to avoid possible matrix/vector broadcast
+        # errors.
+        #
+        # For example, if we subtract an array of shape (3,) from an array of shape
+        # (3,1) we get an array of shape(3,3) as the result when we want
+        # an array of shape (3,1) instead.
+        #
+        # Making both arrays (3,1) insures the result is (3,1) and does
+        # an elementwise subtraction as expected.
+        y = self.inbound_nodes[0].value.reshape(-1, 1)
+        a = self.inbound_nodes[1].value.reshape(-1, 1)
+        
+        self.value = np.mean((y-a)**2)
+
+
+
 
 ## Non-class function
 def topological_sort(feed_dict):
