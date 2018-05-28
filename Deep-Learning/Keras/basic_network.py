@@ -16,5 +16,5 @@ model.add(Activation('relu'))
 #4th Layer - Add a fully connected layer
 model.add(Dense(60))
 
-#5th Layer - Add a ReLU activation layer
-model.add(Activation('relu'))
+#5th Layer - Add a softmax activation layer
+model.add(Activation('softmax'))
