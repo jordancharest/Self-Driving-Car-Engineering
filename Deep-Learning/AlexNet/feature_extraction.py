@@ -2,7 +2,7 @@ import time
 import tensorflow as tf
 import numpy as np
 import pandas as pd
-from scipy.misc import imread
+from imageio import imread
 from alexnet import AlexNet
 
 sign_names = pd.read_csv('signnames.csv')
@@ -14,12 +14,11 @@ resized = tf.image.resize_images(x, (227, 227))
 # NOTE: By setting `feature_extract` to `True` we return
 # the second to last layer.
 fc7 = AlexNet(resized, feature_extract=True)
-# TODO: Define a new fully connected layer followed by a softmax activation to classify
-# the traffic signs. Assign the result of the softmax activation to `probs` below.
-# HINT: Look at the final layer definition in alexnet.py to get an idea of what this
-# should look like.
-shape = (fc7.get_shape().as_list()[-1], nb_classes)  # use this shape for the weight matrix
-probs = ...
+shape = (fc7.get_shape().as_list()[-1], nb_classes)
+fc8W = tf.Variable(tf.truncated_normal(shape, stddev=1e-2))
+fc8b = tf.Variable(tf.zeros(nb_classes))
+logits = tf.nn.xw_plus_b(fc7, fc8W, fc8b)
+probs = tf.nn.softmax(logits)
 
 init = tf.global_variables_initializer()
 sess = tf.Session()
@@ -41,7 +40,7 @@ for input_im_ind in range(output.shape[0]):
     inds = np.argsort(output)[input_im_ind, :]
     print("Image", input_im_ind)
     for i in range(5):
-        print("%s: %.3f" % (sign_names.ix[inds[-1 - i]][1], output[input_im_ind, inds[-1 - i]]))
+        print("%s: %.3f" % (sign_names.iloc[inds[-1 - i]][1], output[input_im_ind, inds[-1 - i]]))
     print()
 
 print("Time: %.3f seconds" % (time.time() - t))
