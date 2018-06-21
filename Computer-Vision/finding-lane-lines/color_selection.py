@@ -3,7 +3,7 @@ import matplotlib.image as mpimg
 import numpy as np
 
 # Read in the image and print out some stats
-image = mpimg.imread('road.jpg')
+image = mpimg.imread('exit-ramp.jpg')
 print('This image is: ',type(image), 
          'with dimensions:', image.shape)
 
@@ -15,9 +15,9 @@ xsize = image.shape[1]
 color_select = np.copy(image)
 
 # Define our color selection criteria
-red_threshold = 200
-green_threshold = 200
-blue_threshold = 200
+red_threshold = 190
+green_threshold = 150
+blue_threshold = 0
 rgb_threshold = [red_threshold, green_threshold, blue_threshold]
 
 # Identify pixels below the threshold

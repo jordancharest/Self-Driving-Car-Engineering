@@ -30,6 +30,8 @@ fit_left = np.polyfit((left_bottom[0], apex[0]), (left_bottom[1], apex[1]), 1)
 fit_right = np.polyfit((right_bottom[0], apex[0]), (right_bottom[1], apex[1]), 1)
 fit_bottom = np.polyfit((left_bottom[0], right_bottom[0]), (left_bottom[1], right_bottom[1]), 1)
 
+print(fit_left)
+
 # Mask pixels below the threshold
 color_thresholds = (image[:,:,0] < rgb_threshold[0]) | \
                     (image[:,:,1] < rgb_threshold[1]) | \

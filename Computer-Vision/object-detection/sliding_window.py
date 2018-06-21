@@ -3,7 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-image = mpimg.imread('bbox-example-image.jpg')
+
 
 # Here is your draw_boxes function from the previous exercise
 def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
@@ -57,12 +57,16 @@ def slide_window(img, x_start_stop=[None, None], y_start_stop=[None, None],
             starty = ys*ny_pix_per_step + y_start_stop[0]
             endy = starty + xy_window[1]
             # Append window position to list
-            window_list.append(((startx, starty), (endx, endy)))
+            window_list.append(((int(startx), int(starty)), (int(endx), int(endy))))
     # Return the list of windows
     return window_list
 
+image = mpimg.imread('bbox-example-image.jpg')
+y_start_stop = [image.shape[0] * 0.5, image.shape[0]] # Min and max in y to search in slide_window()
+print(y_start_stop)
 
-windows = slide_window(image, x_start_stop=[None, None], y_start_stop=[None, None], 
+
+windows = slide_window(image, x_start_stop=[None, None], y_start_stop=y_start_stop, 
                     xy_window=(128, 128), xy_overlap=(0.5, 0.5))
                        
 window_img = draw_boxes(image, windows, color=(0, 0, 255), thick=6)                    
