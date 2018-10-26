@@ -1,0 +1,6 @@
+*AlexNet*
+*.ipynb_checkpoints
+*lenet*
+*.gz
+*MNIST*
+*.docx
