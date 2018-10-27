@@ -12,12 +12,12 @@ void KalmanFilter::Predict() {
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
-    Eigen::MatrixXd Ht = H.transpose();
+    Eigen::MatrixXd Ht = H_.transpose();
 
     Eigen::VectorXd z_pred = H_ * x_;
     Eigen::VectorXd y = z - z_pred;
     Eigen::MatrixXd S = H_ * P_ * Ht + R_;
-    Eigen::MatrixXd K = P * Ht * S.inverse();
+    Eigen::MatrixXd K = P_ * Ht * S.inverse();
 
     // new estimate
     x_ = x_ + (K * y);

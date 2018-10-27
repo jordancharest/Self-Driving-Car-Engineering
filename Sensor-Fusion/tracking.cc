@@ -1,4 +1,4 @@
-#include "Dense"
+#include "Eigen/Dense"
 #include <iostream>
 #include "tracking.h"
 
